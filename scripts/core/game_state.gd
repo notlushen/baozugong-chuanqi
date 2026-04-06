@@ -134,9 +134,9 @@ func get_furniture_bonus() -> float:
 
 
 func reset_for_prestige() -> void:
-	money = 0.0
+	money = 500.0  # Starting capital like new game
 	pending_rent = 0.0
-	total_earned = 0.0
+	total_earned = 500.0  # Starting capital counts as earned
 	properties.clear()
 	upgrades.clear()
 	# Keep furniture collection - it's permanent!
