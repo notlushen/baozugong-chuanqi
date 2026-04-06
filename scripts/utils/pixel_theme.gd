@@ -20,10 +20,10 @@ const COLOR_SEPARATOR := Color("#d4af37")     # Separator color
 const BORDER_WIDTH := 2
 
 # Get font with emoji fallback for emoji support
-# Uses OpenMoji (monochrome, web-compatible) as fallback for emojis
+# Uses Noto Color Emoji for emoji display
 static func _get_font_with_emoji() -> Font:
 	var chinese := load("res://assets/NotoSansSC.otf") as FontFile
-	var emoji := load("res://assets/OpenMoji.ttf") as FontFile
+	var emoji := load("res://assets/NotoEmoji.ttf") as FontFile
 	
 	var variation := FontVariation.new()
 	variation.base_font = chinese
