@@ -5,7 +5,7 @@ const SLOT_MACHINE = {
 	"id": "slot_machine",
 	"name": "幸运老虎机",
 	"icon": "🎰",
-	"cooldown": 60.0,
+	"cooldown": 0.0,
 	"bet_tiers": [
 		{"id": "small", "name": "小注", "cost": 100, "icon": "🪙"},
 		{"id": "medium", "name": "中注", "cost": 500, "icon": "💰"},
