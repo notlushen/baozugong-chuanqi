@@ -20,6 +20,8 @@ var slot_machine_btn: Button
 var coin_rain_btn: Button
 var prestige_btn: Button
 var collect_rent_btn: Button
+var menu_btn: Button
+var save_btn: Button
 
 var _active_popup: Control = null
 var _event_popup: Control = null
@@ -237,6 +239,22 @@ func _build_ui() -> void:
 	prestige_btn = Button.new()
 	prestige_btn.text = "⭐ 声望"
 	minigame_hbox.add_child(prestige_btn)
+
+	var spacer4 = Control.new()
+	spacer4.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	minigame_hbox.add_child(spacer4)
+
+	save_btn = Button.new()
+	save_btn.text = "💾 存档"
+	minigame_hbox.add_child(save_btn)
+
+	menu_btn = Button.new()
+	menu_btn.text = "🏠 菜单"
+	minigame_hbox.add_child(menu_btn)
+
+	# Connect save and menu buttons
+	save_btn.pressed.connect(_on_save_pressed)
+	menu_btn.pressed.connect(_on_menu_pressed)
 
 
 func _process(delta: float) -> void:
@@ -562,6 +580,25 @@ func _on_popup_closed() -> void:
 		_active_popup.queue_free()
 		_active_popup = null
 
+
+func _on_save_pressed() -> void:
+	SaveSystem.save_game()
+	# Show brief save confirmation
+	var label = Label.new()
+	label.text = "💾 已保存!"
+	label.add_theme_font_size_override("font_size", 24)
+	label.position = Vector2(100, 100)
+	add_child(label)
+	# Fade out and remove
+	var tween = create_tween()
+	tween.tween_interval(1.0)
+	tween.tween_callback(label.queue_free)
+
+
+func _on_menu_pressed() -> void:
+	# Save before going back to menu
+	SaveSystem.save_game()
+	get_tree().change_scene_to_file("res://scenes/start_screen.tscn")
 
 func _on_event_triggered(event_type: String, data: Dictionary) -> void:
 	if _event_popup != null:

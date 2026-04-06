@@ -2,6 +2,7 @@ extends Control
 
 const MAIN_SCENE = preload("res://scenes/main.tscn")
 const RetroTheme = preload("res://scripts/utils/pixel_theme.gd")
+const SAVE_PATH = "user://baozugong_save_data.json"
 
 var continue_btn: Button
 var new_game_btn: Button
@@ -128,10 +129,10 @@ func _check_save_file() -> void:
 
 
 func _get_save_info() -> String:
-	if not FileAccess.file_exists(SaveSystem.SAVE_PATH):
+	if not FileAccess.file_exists(SAVE_PATH):
 		return ""
 
-	var file = FileAccess.open(SaveSystem.SAVE_PATH, FileAccess.READ)
+	var file = FileAccess.open(SAVE_PATH, FileAccess.READ)
 	if not file:
 		return ""
 
@@ -180,15 +181,15 @@ func _on_new_game_pressed() -> void:
 	GameState.last_save_time = 0.0
 
 	# Delete old save if exists
-	if FileAccess.file_exists(SaveSystem.SAVE_PATH):
-		DirAccess.remove_absolute(SaveSystem.SAVE_PATH)
+	if FileAccess.file_exists(SAVE_PATH):
+		DirAccess.remove_absolute(SAVE_PATH)
 
 	get_tree().change_scene_to_packed(MAIN_SCENE)
 
 
 func _on_delete_save_pressed() -> void:
-	if FileAccess.file_exists(SaveSystem.SAVE_PATH):
-		DirAccess.remove_absolute(SaveSystem.SAVE_PATH)
+	if FileAccess.file_exists(SAVE_PATH):
+		DirAccess.remove_absolute(SAVE_PATH)
 		_has_save = false
 		_check_save_file()
 

@@ -1,10 +1,10 @@
 extends Node
 
 ## Save System for idle game
-## Handles JSON save/load with auto-save functionality
+## Handles JSON save/load with auto-save functionality using LocalStorage for web persistence
 ## Will be autoloaded as a singleton
 
-const SAVE_PATH: String = "user://save_data.json"
+const SAVE_KEY: String = "baozugong_save_data"
 const AUTO_SAVE_INTERVAL: float = 30.0
 const MAX_OFFLINE_SECONDS: int = 28800  # 8 hours
 const OFFLINE_EFFICIENCY_DEFAULT: float = 0.5
@@ -30,6 +30,10 @@ func _notification(what: int) -> void:
 		save_game()
 
 
+func _is_web() -> bool:
+	return OS.get_name() == "Web"
+
+
 func save_game() -> void:
 	var save_data: Dictionary = {
 		"version": 1,
@@ -45,26 +49,39 @@ func save_game() -> void:
 		"achievements": GameState.achievements.duplicate(true)
 	}
 
-	var file = FileAccess.open(SAVE_PATH, FileAccess.WRITE)
-	if file:
-		file.store_string(JSON.stringify(save_data))
-		file.close()
-		game_saved.emit()
+	var json_string = JSON.stringify(save_data)
+
+	if _is_web():
+		# Use LocalStorage for web
+		var escaped = json_string.replace("'", "\\'")
+		JavaScriptBridge.eval("localStorage.setItem('" + SAVE_KEY + "', '" + escaped + "');")
 	else:
-		push_error("Failed to save game to: " + SAVE_PATH)
+		# Desktop fallback - use FileAccess
+		var file = FileAccess.open("user://" + SAVE_KEY + ".json", FileAccess.WRITE)
+		if file:
+			file.store_string(json_string)
+			file.close()
+
+	game_saved.emit()
 
 
 func load_game() -> bool:
-	if not has_save_file():
-		return false
+	var json_string: String = ""
 
-	var file = FileAccess.open(SAVE_PATH, FileAccess.READ)
-	if not file:
-		push_error("Failed to open save file for reading")
-		return false
-
-	var json_string = file.get_as_text()
-	file.close()
+	if _is_web():
+		# Load from LocalStorage for web
+		json_string = str(JavaScriptBridge.eval("localStorage.getItem('" + SAVE_KEY + "');"))
+		if json_string == "null" or json_string.is_empty():
+			return false
+	else:
+		# Desktop fallback - use FileAccess
+		if not FileAccess.file_exists("user://" + SAVE_KEY + ".json"):
+			return false
+		var file = FileAccess.open("user://" + SAVE_KEY + ".json", FileAccess.READ)
+		if not file:
+			return false
+		json_string = file.get_as_text()
+		file.close()
 
 	var json = JSON.new()
 	var parse_result = json.parse(json_string)
@@ -124,7 +141,11 @@ func calculate_offline_income() -> float:
 
 
 func has_save_file() -> bool:
-	return FileAccess.file_exists(SAVE_PATH)
+	if _is_web():
+		var result = str(JavaScriptBridge.eval("localStorage.getItem('" + SAVE_KEY + "');"))
+		return result != "null" and not result.is_empty()
+	else:
+		return FileAccess.file_exists("user://" + SAVE_KEY + ".json")
 
 
 func get_save_data() -> Dictionary:
