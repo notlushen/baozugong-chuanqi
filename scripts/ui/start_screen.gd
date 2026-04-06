@@ -6,6 +6,8 @@ const RetroTheme = preload("res://scripts/utils/pixel_theme.gd")
 var continue_btn: Button
 var new_game_btn: Button
 var delete_save_btn: Button
+var export_save_btn: Button
+var import_save_btn: Button
 var save_info_label: Label
 var _has_save: bool = false
 
@@ -89,16 +91,32 @@ func _build_ui() -> void:
 	delete_save_btn.visible = false
 	vbox.add_child(delete_save_btn)
 
+	# Export save button
+	export_save_btn = Button.new()
+	export_save_btn.text = "📤 导出存档"
+	export_save_btn.custom_minimum_size = Vector2(250, 45)
+	export_save_btn.visible = false
+	vbox.add_child(export_save_btn)
+
+	# Import save button
+	import_save_btn = Button.new()
+	import_save_btn.text = "📥 导入存档"
+	import_save_btn.custom_minimum_size = Vector2(250, 45)
+	vbox.add_child(import_save_btn)
+
 	# Connect signals
 	continue_btn.pressed.connect(_on_continue_pressed)
 	new_game_btn.pressed.connect(_on_new_game_pressed)
 	delete_save_btn.pressed.connect(_on_delete_save_pressed)
+	export_save_btn.pressed.connect(_on_export_save_pressed)
+	import_save_btn.pressed.connect(_on_import_save_pressed)
 
 
 func _check_save_file() -> void:
 	_has_save = SaveSystem.has_save_file()
 	continue_btn.disabled = not _has_save
 	delete_save_btn.visible = _has_save
+	export_save_btn.visible = _has_save
 
 	if _has_save:
 		var info = _get_save_info()
@@ -173,3 +191,75 @@ func _on_delete_save_pressed() -> void:
 		DirAccess.remove_absolute(SaveSystem.SAVE_PATH)
 		_has_save = false
 		_check_save_file()
+
+
+func _on_export_save_pressed() -> void:
+	if not _has_save:
+		return
+	
+	var save_json = SaveSystem.export_save()
+	var file_name = "baozugong_save_" + str(Time.get_unix_time_from_system()) + ".json"
+	
+	# Use JavaScript for web download
+	if JavaScriptBridge.exists():
+		JavaScriptBridge.eval("""
+			var blob = new Blob(['%s'], {type: 'application/json'});
+			var url = URL.createObjectURL(blob);
+			var a = document.createElement('a');
+			a.href = url;
+			a.download = '%s';
+			document.body.appendChild(a);
+			a.click();
+			document.body.removeChild(a);
+			URL.revokeObjectURL(url);
+		""" % [save_json.replace("'", "\\'"), file_name])
+	else:
+		# Desktop fallback - save to user directory
+		var fallback_path = "user://exports/" + file_name
+		var dir = DirAccess.open("user://")
+		if not dir.dir_exists("exports"):
+			dir.make_dir("exports")
+		var file = FileAccess.open(fallback_path, FileAccess.WRITE)
+		if file:
+			file.store_string(save_json)
+			file.close()
+			save_info_label.text = "存档已导出到:\n" + fallback_path
+			save_info_label.visible = true
+
+
+func _on_import_save_pressed() -> void:
+	# Create a file input for web
+	if JavaScriptBridge.exists():
+		JavaScriptBridge.eval("""
+			var input = document.createElement('input');
+			input.type = 'file';
+			input.accept = '.json';
+			input.onchange = function(e) {
+				var file = e.target.files[0];
+				if (file) {
+					var reader = new FileReader();
+					reader.onload = function(e) {
+						window.importedSaveData = e.target.result;
+					};
+					reader.readAsText(file);
+				}
+			};
+			input.click();
+		""")
+		# Check if we got data after a short delay
+		await get_tree().create_timer(0.5).timeout
+		var imported_data = JavaScriptBridge.eval("window.importedSaveData")
+		if imported_data and imported_data != "undefined":
+			if SaveSystem.import_save(imported_data):
+				save_info_label.text = "✅ 存档导入成功!"
+				save_info_label.visible = true
+				_check_save_file()
+			else:
+				save_info_label.text = "❌ 存档导入失败"
+				save_info_label.visible = true
+		else:
+			save_info_label.text = "请选择有效的存档文件"
+			save_info_label.visible = true
+	else:
+		save_info_label.text = "请在网页版使用导入功能"
+		save_info_label.visible = true

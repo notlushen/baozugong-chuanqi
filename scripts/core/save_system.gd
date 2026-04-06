@@ -125,3 +125,65 @@ func calculate_offline_income() -> float:
 
 func has_save_file() -> bool:
 	return FileAccess.file_exists(SAVE_PATH)
+
+
+func get_save_data() -> Dictionary:
+	"""Get current save data as dictionary for export"""
+	return {
+		"version": 1,
+		"money": GameState.money,
+		"pending_rent": GameState.pending_rent,
+		"total_earned": GameState.total_earned,
+		"prestige_level": GameState.prestige_level,
+		"prestige_points": GameState.prestige_points,
+		"properties": GameState.properties.duplicate(true),
+		"upgrades": GameState.upgrades.duplicate(true),
+		"furniture": GameState.furniture.duplicate(true),
+		"last_save_time": Time.get_unix_time_from_system(),
+		"achievements": GameState.achievements.duplicate(true)
+	}
+
+
+func export_save() -> String:
+	"""Export save data as JSON string for manual backup"""
+	var save_data = get_save_data()
+	return JSON.stringify(save_data)
+
+
+func import_save(json_string: String) -> bool:
+	"""Import save data from JSON string. Returns true if successful."""
+	var json = JSON.new()
+	var parse_result = json.parse(json_string)
+	
+	if parse_result != OK:
+		push_error("Failed to parse import data")
+		return false
+	
+	var save_data: Dictionary = json.get_data()
+	
+	if typeof(save_data) != TYPE_DICTIONARY:
+		push_error("Invalid save data format")
+		return false
+	
+	# Validate minimum required fields
+	if not save_data.has("money") or not save_data.has("properties"):
+		push_error("Save data missing required fields")
+		return false
+	
+	# Apply save data with fallbacks for missing fields
+	GameState.money = save_data.get("money", 500.0)
+	GameState.pending_rent = save_data.get("pending_rent", 0.0)
+	GameState.total_earned = save_data.get("total_earned", 500.0)
+	GameState.prestige_level = save_data.get("prestige_level", 0)
+	GameState.prestige_points = save_data.get("prestige_points", 0)
+	GameState.properties = save_data.get("properties", {})
+	GameState.upgrades = save_data.get("upgrades", {})
+	GameState.furniture = save_data.get("furniture", {})
+	GameState.last_save_time = save_data.get("last_save_time", Time.get_unix_time_from_system())
+	GameState.achievements = save_data.get("achievements", {})
+	
+	# Save the imported data immediately
+	save_game()
+	
+	game_loaded.emit()
+	return true
