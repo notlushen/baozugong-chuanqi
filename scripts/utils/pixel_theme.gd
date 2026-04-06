@@ -19,25 +19,11 @@ const COLOR_SEPARATOR := Color("#d4af37")     # Separator color
 # Border width for pixel look
 const BORDER_WIDTH := 2
 
-# Load Chinese font for web export (Godot 4 uses FontFile instead of DynamicFont)
-static func _get_chinese_font() -> FontFile:
-	var chinese := load("res://assets/NotoSansSC.otf") as FontFile
-	var emoji := load("res://assets/NotoEmoji.ttf") as FontFile
-	
-	# Create FontVariation to chain fallbacks (Chinese -> Emoji)
-	var variation := FontVariation.new()
-	variation.base_font = chinese
-	if emoji:
-		variation.fallbacks = [emoji]
-	
-	# Return the base font with variation settings
-	# Note: For full fallback support, use variation as default font
-	return chinese
-
 # Get font with emoji fallback for emoji support
+# Uses OpenMoji (monochrome, web-compatible) as fallback for emojis
 static func _get_font_with_emoji() -> Font:
 	var chinese := load("res://assets/NotoSansSC.otf") as FontFile
-	var emoji := load("res://assets/NotoEmoji.ttf") as FontFile
+	var emoji := load("res://assets/OpenMoji.ttf") as FontFile
 	
 	var variation := FontVariation.new()
 	variation.base_font = chinese
