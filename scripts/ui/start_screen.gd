@@ -199,19 +199,11 @@ func _on_export_save_pressed() -> void:
 		return
 	
 	var save_json = SaveSystem.export_save()
-	var file_name = "baozugong_save_" + str(Time.get_unix_time_from_system()) + ".json"
 	
-	# Desktop fallback - save to user directory
-	var fallback_path = "user://exports/" + file_name
-	var dir = DirAccess.open("user://")
-	if dir and not dir.dir_exists("exports"):
-		dir.make_dir("exports")
-	var file = FileAccess.open(fallback_path, FileAccess.WRITE)
-	if file:
-		file.store_string(save_json)
-		file.close()
-		save_info_label.text = "存档已导出到:\n" + fallback_path + "\n请从用户文件夹复制"
-		save_info_label.visible = true
+	# Try to copy to clipboard
+	DisplayServer.clipboard_set(save_json)
+	save_info_label.text = "✅ 存档已复制到剪贴板!\n请保存弹出的文本内容"
+	save_info_label.visible = true
 
 
 func _on_import_save_pressed() -> void:
