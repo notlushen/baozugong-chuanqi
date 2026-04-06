@@ -618,6 +618,12 @@ func _show_event_popup(scene: PackedScene, event_type: String, data: Dictionary)
 	add_child(popup)
 	_event_popup = popup
 
+	# Center the popup
+	await get_tree().process_frame
+	var screen_size = get_viewport().get_visible_rect().size
+	var popup_size = popup.size
+	popup.position = (screen_size - popup_size) / 2
+
 	if popup.has_method("start_event"):
 		popup.start_event(data)
 
