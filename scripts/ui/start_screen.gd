@@ -1,6 +1,7 @@
 extends Control
 
 const MAIN_SCENE = preload("res://scenes/main.tscn")
+const RetroTheme = preload("res://scripts/utils/pixel_theme.gd")
 
 var continue_btn: Button
 var new_game_btn: Button
@@ -15,6 +16,9 @@ func _ready() -> void:
 
 
 func _build_ui() -> void:
+	# Apply retro theme first (must be before adding children)
+	theme = RetroTheme.get_theme()
+	
 	# Background
 	var bg = ColorRect.new()
 	bg.set_anchors_preset(Control.PRESET_FULL_RECT)

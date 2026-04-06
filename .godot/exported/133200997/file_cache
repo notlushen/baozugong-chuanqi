@@ -1,0 +1,12 @@
+res://scenes/dialogs/offline_summary.tscn::b94e0f47144de158049246a02a18184d::1775475751::res://.godot/exported/133200997/export-1d0db4a056e74f4be6683e5986658139-offline_summary.scn
+res://scenes/dialogs/prestige_confirm_dialog.tscn::fd7216659d68013e4e700d9b6e6089b0::1775488822::res://.godot/exported/133200997/export-ebc22d164311e5681270b551618e8ece-prestige_confirm_dialog.scn
+res://scenes/events/repair_event.tscn::311b28ab458051811cc1fe88be96f151::1775417513::res://.godot/exported/133200997/export-ecad48ad07d550eff4035669666ed049-repair_event.scn
+res://scenes/events/urge_rent_event.tscn::20c4bdace97ee99fec8346bab9232137::1775417501::res://.godot/exported/133200997/export-4b5efeddf11cbc5cda0a0487b9f20366-urge_rent_event.scn
+res://scenes/minigames/coin.tscn::abf926d8728c2e65c6795704d7a2cf23::1775417260::res://.godot/exported/133200997/export-277be42a46ff0d4feab3bf16406dfcfc-coin.scn
+res://scenes/minigames/coin_rain.tscn::87553361c0feb13c91c4ba5b22ec5485::1775417195::res://.godot/exported/133200997/export-44ee933a2ca2082193b78f0ea39cb1bc-coin_rain.scn
+res://scenes/minigames/slot_machine.tscn::711b5b9abb5fcea9dc8236c36dc72a10::1775477073::res://.godot/exported/133200997/export-2042aa0b80efe3131d0c05ae62405937-slot_machine.scn
+res://scenes/ui/prestige_shop.tscn::f33db6d26651bc4a09e5ac5e6c93915c::1775483936::res://.godot/exported/133200997/export-7a048b45dddf57d506fb880835b64632-prestige_shop.scn
+res://scenes/ui/property_card.tscn::b914e8f071ec592e03b4378692619377::1775416754::res://.godot/exported/133200997/export-1bfde9f8c9f12d709db49ccd55ca7211-property_card.scn
+res://scenes/ui/property_panel.tscn::fd9a9d530fc8de2b9aff00b437f50a93::1775417129::res://.godot/exported/133200997/export-930016fae5088aa8801ecad5748543eb-property_panel.scn
+res://scenes/main.tscn::77b83c2403979e22008342bdcbd2e6d8::1775465267::res://.godot/exported/133200997/export-3ad5c15c4f3250da0cc7c1af1770d85f-main.scn
+res://scenes/start_screen.tscn::80e9e7a374642973c0211d957948597b::1775481984::res://.godot/exported/133200997/export-0667f4c7c212ccfd14534425cdebbe06-start_screen.scn
