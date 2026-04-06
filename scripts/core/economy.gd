@@ -12,18 +12,73 @@ const PROPERTY_DATA = {
 }
 
 const TICK_INTERVAL = 0.1
+const SAVE_PENDING_INTERVAL = 5.0  # Save pending_rent every 5 seconds
 
 const UPGRADE_COST_TABLE = [0.5, 1.2, 2.5, 5.0, 8.0, 12.0, 18.0, 25.0]
 
 var _income_timer: Timer
+var _save_pending_timer: Timer
+var _last_tick_time: float = 0.0
+var _is_web: bool = false
+var _last_visible_time: float = 0.0
 
 
 func _ready() -> void:
+	_is_web = OS.get_name() == "Web"
+	
 	_income_timer = Timer.new()
 	_income_timer.wait_time = TICK_INTERVAL
 	_income_timer.timeout.connect(_on_income_tick)
 	add_child(_income_timer)
 	_income_timer.start()
+	
+	_save_pending_timer = Timer.new()
+	_save_pending_timer.wait_time = SAVE_PENDING_INTERVAL
+	_save_pending_timer.timeout.connect(_on_save_pending_tick)
+	add_child(_save_pending_timer)
+	_save_pending_timer.start()
+	
+	_last_tick_time = Time.get_unix_time_from_system()
+	_last_visible_time = _last_tick_time
+	
+	# Set up web visibility handling if needed
+	if _is_web:
+		_setup_web_visibility()
+
+
+func _setup_web_visibility() -> void:
+	# JavaScript visibility API is handled via notification
+	pass
+
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_WM_WINDOW_FOCUS_IN:
+		_handle_focus_in()
+	elif what == NOTIFICATION_WM_WINDOW_FOCUS_OUT:
+		_handle_focus_out()
+
+
+func _handle_focus_in() -> void:
+	var current_time = Time.get_unix_time_from_system()
+	var elapsed = current_time - _last_visible_time
+	
+	# If tab was invisible for more than 1 second, calculate missed income
+	if elapsed > 1.0 and _is_web:
+		var missed_income = Economy.get_income_per_second() * elapsed
+		if missed_income > 0:
+			# Add missed income as pending rent (like offline income)
+			GameState.add_pending_rent(missed_income)
+	
+	_last_visible_time = current_time
+
+
+func _handle_focus_out() -> void:
+	_last_visible_time = Time.get_unix_time_from_system()
+
+
+func _on_save_pending_tick() -> void:
+	# Periodically save pending_rent to prevent loss on refresh
+	SaveSystem.save_game()
 
 
 func get_property_cost(property_id: String) -> float:
