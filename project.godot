@@ -43,3 +43,4 @@ enabled=PackedStringArray("res://addons/godot_mcp/plugin.cfg")
 rendering_device/driver.windows="d3d12"
 renderer/rendering_method="mobile"
 renderer/rendering_method.mobile="web"
+textures/canvas_textures/default_font="DynamicFont"

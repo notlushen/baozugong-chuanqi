@@ -19,9 +19,20 @@ const COLOR_SEPARATOR := Color("#d4af37")     # Separator color
 # Border width for pixel look
 const BORDER_WIDTH := 2
 
+# Load Chinese font for web export (Godot 4 uses FontFile instead of DynamicFont)
+static func _get_chinese_font() -> FontFile:
+	return load("res://assets/NotoSansSC.otf") as FontFile
+
 # Get the configured Theme object
 static func get_theme() -> Theme:
 	var theme := Theme.new()
+	
+	# Set global fallback font for all controls (Godot 4 way)
+	var chinese_font = _get_chinese_font()
+	if chinese_font:
+		ThemeDB.set_fallback_font(chinese_font)
+	# Also set on theme's default_font property
+	theme.default_font = chinese_font
 	
 	# PanelContainer styles
 	theme.set_color("panel_color", "PanelContainer", COLOR_PANEL)
