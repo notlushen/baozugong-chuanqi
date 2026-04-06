@@ -1,0 +1,83 @@
+[gd_scene load_steps=2 format=3 uid="uid://prestigeshop001"]
+
+[ext_resource type="Script" path="res://scripts/ui/prestige_shop.gd" id="1_shop"]
+
+[node name="PrestigeShop" type="Control"]
+layout_mode = 3
+script = ExtResource("1_shop")
+
+[node name="Overlay" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0, 0, 0, 0.7)
+
+[node name="Panel" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 200.0
+offset_top = 50.0
+offset_right = -200.0
+offset_bottom = -50.0
+
+[node name="VBox" type="VBoxContainer" parent="Panel"]
+layout_mode = 2
+theme_override_constants/separation = 10
+alignment = 1
+
+[node name="TitleLabel" type="Label" parent="Panel/VBox"]
+layout_mode = 2
+text = "⭐ 声望商店"
+horizontal_alignment = 1
+
+[node name="PointsLabel" type="Label" parent="Panel/VBox"]
+layout_mode = 2
+text = "⭐ 声望点: 0"
+horizontal_alignment = 1
+
+[node name="ProgressSection" type="VBoxContainer" parent="Panel/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="ProgressLabel" type="Label" parent="Panel/VBox/ProgressSection"]
+layout_mode = 2
+text = "声望进度"
+horizontal_alignment = 1
+
+[node name="ProgressBar" type="ProgressBar" parent="Panel/VBox/ProgressSection"]
+layout_mode = 2
+value = 50.0
+
+[node name="NextTierLabel" type="Label" parent="Panel/VBox/ProgressSection"]
+layout_mode = 2
+text = "下一级: Lv.1 (需要 10,000,000)"
+horizontal_alignment = 1
+
+[node name="PrestigeBtn" type="Button" parent="Panel/VBox"]
+layout_mode = 2
+text = "🔄 进行声望重置"
+
+[node name="StatusLabel" type="Label" parent="Panel/VBox"]
+layout_mode = 2
+text = "状态: 不可重置"
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="Panel/VBox"]
+layout_mode = 2
+
+[node name="UpgradesLabel" type="Label" parent="Panel/VBox"]
+layout_mode = 2
+text = "升级项目"
+horizontal_alignment = 1
+
+[node name="UpgradesContainer" type="ScrollContainer" parent="Panel/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="CloseBtn" type="Button" parent="Panel/VBox"]
+layout_mode = 2
+text = "关闭"
+size_flags_horizontal = 3

@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://proppanel001"]
+
+[ext_resource type="Script" path="res://scripts/ui/property_panel.gd" id="1_panel"]
+
+[node name="PropertyPanel" type="VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 8
+script = ExtResource("1_panel")

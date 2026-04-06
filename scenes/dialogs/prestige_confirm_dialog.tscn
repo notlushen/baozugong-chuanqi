@@ -1,0 +1,108 @@
+[gd_scene format=3 uid="uid://c6bjwq8wv78bk"]
+
+[ext_resource type="Script" path="res://scripts/dialogs/prestige_confirm_dialog.gd" id="1_confirm"]
+
+[node name="PrestigeConfirmDialog" type="Control"]
+layout_mode = 3
+script = ExtResource("1_confirm")
+
+[node name="Overlay" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0, 0, 0, 0.7)
+
+[node name="Panel" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -250.0
+offset_top = -200.0
+offset_right = 250.0
+offset_bottom = 200.0
+
+[node name="VBox" type="VBoxContainer" parent="Panel"]
+layout_mode = 2
+theme_override_constants/separation = 12
+alignment = 1
+
+[node name="TitleLabel" type="Label" parent="Panel/VBox"]
+layout_mode = 2
+text = "⚠️ 确认声望重置"
+horizontal_alignment = 1
+
+[node name="CurrentInfo" type="VBoxContainer" parent="Panel/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="CurrentLevelLabel" type="Label" parent="Panel/VBox/CurrentInfo"]
+layout_mode = 2
+text = "当前声望等级: Lv.0"
+horizontal_alignment = 1
+
+[node name="CurrentPointsLabel" type="Label" parent="Panel/VBox/CurrentInfo"]
+layout_mode = 2
+text = "当前声望点: 0"
+horizontal_alignment = 1
+
+[node name="NextInfo" type="VBoxContainer" parent="Panel/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="NextLevelLabel" type="Label" parent="Panel/VBox/NextInfo"]
+layout_mode = 2
+text = "下一级: Lv.1"
+horizontal_alignment = 1
+
+[node name="NextReqLabel" type="Label" parent="Panel/VBox/NextInfo"]
+layout_mode = 2
+text = "要求: 10,000,000 总收入"
+horizontal_alignment = 1
+
+[node name="NextRewardLabel" type="Label" parent="Panel/VBox/NextInfo"]
+layout_mode = 2
+text = "奖励: 10 声望点, 1.25x 倍率"
+horizontal_alignment = 1
+
+[node name="HSeparator1" type="HSeparator" parent="Panel/VBox"]
+layout_mode = 2
+
+[node name="ResetLabel" type="Label" parent="Panel/VBox"]
+layout_mode = 2
+text = "以下内容将被重置:"
+horizontal_alignment = 1
+
+[node name="ResetList" type="Label" parent="Panel/VBox"]
+layout_mode = 2
+text = "• 当前金币\n• 所有房产\n• 房产等级"
+horizontal_alignment = 1
+
+[node name="KeepLabel" type="Label" parent="Panel/VBox"]
+layout_mode = 2
+text = "以下内容将被保留:"
+horizontal_alignment = 1
+
+[node name="KeepList" type="Label" parent="Panel/VBox"]
+layout_mode = 2
+text = "• 声望点\n• 声望等级\n• 家具收藏\n• 已购升级\n• 成就"
+horizontal_alignment = 1
+
+[node name="HSeparator2" type="HSeparator" parent="Panel/VBox"]
+layout_mode = 2
+
+[node name="ButtonBox" type="HBoxContainer" parent="Panel/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="CancelBtn" type="Button" parent="Panel/VBox/ButtonBox"]
+layout_mode = 2
+text = "取消"
+
+[node name="ConfirmBtn" type="Button" parent="Panel/VBox/ButtonBox"]
+layout_mode = 2
+text = "确认重置"

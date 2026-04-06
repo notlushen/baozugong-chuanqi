@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3 uid="uid://offlinesummary001"]
+
+[ext_resource type="Script" path="res://scripts/dialogs/offline_summary.gd" id="1_offline"]
+
+[node name="OfflineSummaryDialog" type="Control"]
+layout_mode = 3
+script = ExtResource("1_offline")
