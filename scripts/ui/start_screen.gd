@@ -228,38 +228,38 @@ func _on_export_save_pressed() -> void:
 
 
 func _on_import_save_pressed() -> void:
-	# Create a file input for web
-	if JavaScriptBridge.exists():
-		JavaScriptBridge.eval("""
-			var input = document.createElement('input');
-			input.type = 'file';
-			input.accept = '.json';
-			input.onchange = function(e) {
-				var file = e.target.files[0];
-				if (file) {
-					var reader = new FileReader();
-					reader.onload = function(e) {
-						window.importedSaveData = e.target.result;
-					};
-					reader.readAsText(file);
-				}
-			};
-			input.click();
-		""")
-		# Check if we got data after a short delay
-		await get_tree().create_timer(0.5).timeout
-		var imported_data = JavaScriptBridge.eval("window.importedSaveData")
-		if imported_data and imported_data != "undefined":
-			if SaveSystem.import_save(imported_data):
-				save_info_label.text = "✅ 存档导入成功!"
-				save_info_label.visible = true
-				_check_save_file()
-			else:
-				save_info_label.text = "❌ 存档导入失败"
-				save_info_label.visible = true
-		else:
-			save_info_label.text = "请选择有效的存档文件"
-			save_info_label.visible = true
+	# Show message asking user to paste save data
+	save_info_label.text = "请在新窗口中粘贴存档JSON数据"
+	save_info_label.visible = true
+	
+	# Use a simple approach: read from clipboard
+	var clipboard_text = DisplayServer.clipboard_get()
+	
+	if clipboard_text.is_empty():
+		save_info_label.text = "剪贴板为空\n请先复制存档JSON，然后点击导入按钮"
+		save_info_label.visible = true
+		return
+	
+	# Try to parse and validate as JSON first
+	var json = JSON.new()
+	var parse_result = json.parse(clipboard_text)
+	
+	if parse_result != OK:
+		save_info_label.text = "剪贴板内容不是有效的JSON\n请确保复制了正确的存档数据"
+		save_info_label.visible = true
+		return
+	
+	var save_data = json.get_data()
+	if typeof(save_data) != TYPE_DICTIONARY or not save_data.has("money"):
+		save_info_label.text = "存档格式无效"
+		save_info_label.visible = true
+		return
+	
+	# Import the save
+	if SaveSystem.import_save(clipboard_text):
+		save_info_label.text = "✅ 存档导入成功!"
+		save_info_label.visible = true
+		_check_save_file()
 	else:
-		save_info_label.text = "请在网页版使用导入功能"
+		save_info_label.text = "❌ 存档导入失败"
 		save_info_label.visible = true
