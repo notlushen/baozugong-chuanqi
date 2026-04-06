@@ -21,18 +21,38 @@ const BORDER_WIDTH := 2
 
 # Load Chinese font for web export (Godot 4 uses FontFile instead of DynamicFont)
 static func _get_chinese_font() -> FontFile:
-	return load("res://assets/NotoSansSC.otf") as FontFile
+	var chinese := load("res://assets/NotoSansSC.otf") as FontFile
+	var emoji := load("res://assets/NotoEmoji.ttf") as FontFile
+	
+	# Create FontVariation to chain fallbacks (Chinese -> Emoji)
+	var variation := FontVariation.new()
+	variation.base_font = chinese
+	if emoji:
+		variation.fallbacks = [emoji]
+	
+	# Return the base font with variation settings
+	# Note: For full fallback support, use variation as default font
+	return chinese
+
+# Get font with emoji fallback for emoji support
+static func _get_font_with_emoji() -> Font:
+	var chinese := load("res://assets/NotoSansSC.otf") as FontFile
+	var emoji := load("res://assets/NotoEmoji.ttf") as FontFile
+	
+	var variation := FontVariation.new()
+	variation.base_font = chinese
+	if emoji:
+		variation.fallbacks = [emoji]
+	return variation
 
 # Get the configured Theme object
 static func get_theme() -> Theme:
 	var theme := Theme.new()
 	
-	# Set global fallback font for all controls (Godot 4 way)
-	var chinese_font = _get_chinese_font()
-	if chinese_font:
-		ThemeDB.set_fallback_font(chinese_font)
-	# Also set on theme's default_font property
-	theme.default_font = chinese_font
+	# Use font with emoji fallback
+	var font_with_emoji = _get_font_with_emoji()
+	ThemeDB.set_fallback_font(font_with_emoji)
+	theme.default_font = font_with_emoji
 	
 	# PanelContainer styles
 	theme.set_color("panel_color", "PanelContainer", COLOR_PANEL)
